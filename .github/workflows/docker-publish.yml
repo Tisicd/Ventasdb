@@ -28,7 +28,7 @@ jobs:
         context: . # Cambia si tu Dockerfile está en un subdirectorio (por ejemplo, ./backend)
         file: ./Dockerfile
         push: true
-        tags: tisalema/clientes-service:latest
+        tags: letis/ventas-db:latest
 
     - name: Logout from DockerHub
       run: docker logout
