@@ -1,5 +1,4 @@
--- Crear tablas básicas para panel de ventas y colorimetría
-
+-- Crear tabla de usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100),
@@ -12,31 +11,43 @@ CREATE TABLE IF NOT EXISTS usuarios (
 CREATE TABLE IF NOT EXISTS clientes (
     id SERIAL PRIMARY KEY,
     codigo VARCHAR(20) UNIQUE NOT NULL,
-    nombre VARCHAR(100) NOT NULL,
-    contacto VARCHAR(100),
+    nombres VARCHAR(100) NOT NULL,
+    apellidos VARCHAR(100) NOT NULL,
+    tipo_documento VARCHAR(20) CHECK (tipo_documento IN ('Cédula', 'RUC')) NOT NULL,
+    numero_documento VARCHAR(20) UNIQUE NOT NULL,
+    tipo_cliente VARCHAR(20) CHECK (tipo_cliente IN ('Natural', 'Jurídico')) NOT NULL,
+    razon_social VARCHAR(150), -- solo si es Jurídico
+    correo_electronico VARCHAR(100),
+    telefono VARCHAR(20),
+    fecha_registro DATE DEFAULT CURRENT_DATE,
     estado VARCHAR(20) CHECK (estado IN ('Activo', 'Inactivo')) DEFAULT 'Activo'
 );
 
--- Tabla Detalle: Direcciones asociadas a clientes
+-- Detalle 1: Direcciones asociadas al cliente
 CREATE TABLE IF NOT EXISTS direcciones (
     id SERIAL PRIMARY KEY,
-    codigo VARCHAR(20) UNIQUE NOT NULL,
-    calle VARCHAR(150) NOT NULL,
+    codigo_direccion VARCHAR(20) UNIQUE NOT NULL,
+    calle_principal VARCHAR(150) NOT NULL,
+    calle_secundaria VARCHAR(150),
+    numero_casa VARCHAR(20),
+    barrio VARCHAR(100),
     ciudad VARCHAR(100),
     provincia VARCHAR(100),
-    tipo VARCHAR(50), -- Ej: Principal, Secundaria, Facturación
+    zona VARCHAR(20) CHECK (zona IN ('Urbana', 'Rural')),
+    tipo_direccion VARCHAR(50), -- Ej: Principal, Facturación, Envío, Oficina
     cliente_id INTEGER NOT NULL REFERENCES clientes(id) ON DELETE CASCADE
 );
 
--- Tercer nivel de detalle: información extendida para direcciones
+-- Detalle 2: Información adicional de direcciones
 CREATE TABLE IF NOT EXISTS detalles_direccion (
     id SERIAL PRIMARY KEY,
     direccion_id INTEGER NOT NULL REFERENCES direcciones(id) ON DELETE CASCADE,
     referencia TEXT,
     codigo_postal VARCHAR(20),
-    latitud DECIMAL(10, 8),
-    longitud DECIMAL(11, 8),
-    es_predeterminada BOOLEAN DEFAULT FALSE
+    instrucciones_envio TEXT,
+    observaciones TEXT,
+    fecha_registro_direccion DATE DEFAULT CURRENT_DATE,
+    cliente_id INTEGER NOT NULL REFERENCES clientes(id) ON DELETE CASCADE
 );
 
 -- Productos
