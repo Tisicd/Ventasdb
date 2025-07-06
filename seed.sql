@@ -1,38 +1,50 @@
--- Usuarios
+-- Usuarios de prueba (3 en total, 2 originales + 1 nuevo)
 INSERT INTO usuarios (nombre, email, password, rol) VALUES
 ('Christian Tisalema', 'ctisalema@example.com', 'admin123', 'admin'),
-('María López', 'mlopez@example.com', 'vendedor123', 'vendedor');
+('María López', 'mlopez@example.com', 'vendedor123', 'vendedor'),
+('Pedro Martínez', 'pmartinez@example.com', 'supervisor123', 'supervisor'),
+('Ana Sánchez', 'asanchez@example.com', 'asistente123', 'asistente');
 
--- Productos
-INSERT INTO productos (nombre, descripcion, precio, stock) VALUES
-('Shampoo Color', 'Shampoo para cabello teñido', 9.99, 30),
-('Tintura Capilar', 'Tintura permanente para el cabello', 15.00, 20);
-
--- Clientes (Maestro)
+-- Clientes (Maestro) - SIN información de contacto (ahora está en direcciones)
 INSERT INTO clientes (
     codigo, nombres, apellidos, tipo_documento, numero_documento, tipo_cliente,
-    razon_social, correo_electronico, telefono, fecha_registro, estado
+    razon_social, fecha_registro, estado, observaciones
 ) VALUES
-('CLI001', 'Ana', 'Torres', 'Cédula', '1728391827', 'Natural', NULL, 'ana.torres@example.com', '0987654321', CURRENT_DATE, 'Activo'),
-('CLI002', 'Carlos', 'Pérez', 'RUC', '1790011223001', 'Jurídico', 'Servicios Pérez S.A.', 'carlos.perez@sperez.com', '0998765432', CURRENT_DATE, 'Activo'),
-('CLI003', 'Luisa', 'Méndez', 'Cédula', '1804567890', 'Natural', NULL, 'luisa.mendez@example.com', '0987123456', CURRENT_DATE, 'Inactivo');
+('CLI001', 'Ana', 'Torres', 'Cédula', '1728391827', 'Natural', NULL, CURRENT_DATE, 'Activo', 'Cliente recurrente premium'),
+('CLI002', 'Carlos', 'Pérez', 'RUC', '1790011223001', 'Jurídico', 'Servicios Pérez S.A.', CURRENT_DATE, 'Activo', 'Prefiere factura electrónica'),
+('CLI003', 'Luisa', 'Méndez', 'Cédula', '1804567890', 'Natural', NULL, CURRENT_DATE, 'Inactivo', 'Cliente inactivo, confirmar antes de contactar');
 
--- Direcciones (Detalle 1)
+-- Direcciones (ahora con información de contacto)
 INSERT INTO direcciones (
     codigo_direccion, calle_principal, calle_secundaria, numero_casa, barrio,
-    ciudad, provincia, zona, tipo_direccion, cliente_id
+    ciudad, provincia, zona, codigo_postal,
+    correo_electronico, telefono_principal, telefono_secundario,
+    referencia, tipo_direccion, instrucciones_envio,
+    cliente_id, fecha_registro
 ) VALUES
-('DIR001', 'Av. de los Shyris', 'Av. Naciones Unidas', 'N34-56', 'La Carolina', 'Quito', 'Pichincha', 'Urbana', 'Principal', 1),
-('DIR002', 'Calle 12 de Octubre', 'Luis Cordero', 'E10-22', 'González Suárez', 'Quito', 'Pichincha', 'Urbana', 'Facturación', 1),
-('DIR003', 'Av. del Ejército', 'Av. Quito', 'S25-88', 'Centro', 'Guayaquil', 'Guayas', 'Urbana', 'Secundaria', 2),
-('DIR004', 'Calle Bolívar', 'Simón Bolívar', 'C12-14', 'San Sebastián', 'Cuenca', 'Azuay', 'Urbana', 'Principal', 3);
+-- Direcciones para Ana Torres (CLI001)
+('DIR001', 'Av. de los Shyris', 'Av. Naciones Unidas', 'N34-56', 'La Carolina', 
+ 'Quito', 'Pichincha', 'Urbana', '170518',
+ 'ana.torres@example.com', '0987654321', '022345678',
+ 'Frente al centro comercial Quicentro', 'Principal', 'Llamar antes de entregar',
+ 1, CURRENT_DATE),
 
--- Información adicional de direcciones (Detalle 2)
-INSERT INTO detalles_direccion (
-    direccion_id, referencia, codigo_postal, instrucciones_envio,
-    observaciones, fecha_registro_direccion, cliente_id
-) VALUES
-(1, 'Frente al centro comercial Quicentro', '170518', 'Llamar antes de entregar', 'Cliente recurrente premium', CURRENT_DATE, 1),
-(2, 'Junto al parque La Carolina', '170143', 'No dejar con guardia', 'Solicitó entrega exprés', CURRENT_DATE, 1),
-(3, 'Edificio Torres del Norte, piso 4', '090101', 'Oficina abierta de 9 a 5', 'Prefiere factura electrónica', CURRENT_DATE, 2),
-(4, 'Esquina con la Av. Remigio Crespo', '010203', 'Tocar el timbre azul', 'Cliente inactivo, confirmar antes de entregar', CURRENT_DATE, 3);
+('DIR002', 'Calle 12 de Octubre', 'Luis Cordero', 'E10-22', 'González Suárez', 
+ 'Quito', 'Pichincha', 'Urbana', '170143',
+ 'ana.torres.oficina@example.com', '022987654', NULL,
+ 'Junto al parque La Carolina', 'Oficina', 'No dejar con guardia',
+ 1, CURRENT_DATE),
+
+-- Direcciones para Carlos Pérez (CLI002)
+('DIR003', 'Av. del Ejército', 'Av. Quito', 'S25-88', 'Centro', 
+ 'Guayaquil', 'Guayas', 'Urbana', '090101',
+ 'carlos.perez@sperez.com', '0998765432', '042567890',
+ 'Edificio Torres del Norte, piso 4', 'Facturación', 'Oficina abierta de 9 a 5',
+ 2, CURRENT_DATE),
+
+-- Dirección para Luisa Méndez (CLI003)
+('DIR004', 'Calle Bolívar', 'Simón Bolívar', 'C12-14', 'San Sebastián', 
+ 'Cuenca', 'Azuay', 'Urbana', '010203',
+ 'luisa.mendez@example.com', '0987123456', NULL,
+ 'Esquina con la Av. Remigio Crespo', 'Principal', 'Tocar el timbre azul',
+ 3, CURRENT_DATE);
